@@ -3,42 +3,168 @@
 <head>
     <title>Home - Data Mahasiswa</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background: #f5f4f9; font-family: 'Segoe UI', sans-serif; }
+
+        .topbar {
+            background: #1a1a2e;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .topbar-brand { display: flex; align-items: center; gap: 10px; }
+        .topbar-dot { width: 22px; height: 22px; border-radius: 50%; background: #6354ff; }
+        .topbar-title { color: #e0d9ff; font-size: 14px; font-weight: 600; margin: 0; }
+        .topbar-nim { color: rgba(200,192,255,0.5); font-size: 11px; }
+        .btn-add {
+            background: #6354ff; border: none; color: #fff;
+            border-radius: 8px; padding: 6px 16px;
+            font-size: 13px; font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-add:hover { opacity: 0.85; color: #fff; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #ece9ff;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .stat-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .stat-val { font-size: 24px; font-weight: 700; color: #1a1a2e; }
+        .stat-val.purple { color: #6354ff; }
+        .stat-val.teal { color: #1D9E75; }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #ece9ff;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .table-card-header {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0eeff;
+        }
+        .table-card-title { font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 0; }
+        .badge-count {
+            background: #f0eeff; color: #6354ff;
+            border-radius: 99px; font-size: 11px;
+            padding: 2px 12px; font-weight: 600;
+        }
+
+        .table { margin: 0; }
+        .table thead th {
+            font-size: 12px; font-weight: 600;
+            color: #888; text-transform: uppercase;
+            letter-spacing: 0.05em; background: #faf9ff;
+            border-bottom: 1px solid #f0eeff;
+            padding: 10px 20px;
+        }
+        .table tbody td { padding: 11px 20px; font-size: 14px; vertical-align: middle; }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover { background: #faf9ff; }
+
+        .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: #f0eeff; display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+            color: #6354ff; margin-right: 8px;
+        }
+        .avatar.p { background: #fff0f5; color: #993556; }
+        .nim-pill {
+            background: #f5f5f5; border-radius: 6px;
+            padding: 2px 8px; font-size: 12px;
+            font-family: monospace; color: #666;
+        }
+        .gender-l { background: #e6f1fb; color: #185FA5; border-radius: 99px; padding: 3px 12px; font-size: 12px; font-weight: 600; }
+        .gender-p { background: #fbeaf0; color: #993556; border-radius: 99px; padding: 3px 12px; font-size: 12px; font-weight: 600; }
+
+        .empty-state {
+            text-align: center; padding: 3rem 1rem;
+            color: #aaa; font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-primary mb-4">
-    <div class="container">
-        <span class="navbar-brand">Dashboard Praktikum - 20230140050</span>
-        <a th:href="@{/form}" class="btn btn-light btn-sm">Tambah Data</a>
+
+<nav class="topbar">
+    <div class="topbar-brand">
+        <div class="topbar-dot"></div>
+        <div>
+            <div class="topbar-title">Dashboard Praktikum</div>
+            <div class="topbar-nim">20230140050</div>
+        </div>
     </div>
+    <a th:href="@{/form}" class="btn-add">+ Tambah Data</a>
 </nav>
 
 <div class="container">
-    <h3>Selamat Datang di Aplikasi Deploy</h3>
-    <hr>
+    <h5 style="font-weight:700;color:#1a1a2e;margin-bottom:4px;">Data Mahasiswa</h5>
+    <p style="font-size:13px;color:#888;margin-bottom:1.5rem;">Selamat datang di aplikasi deploy</p>
 
-    <div th:if="${users.empty}" class="alert alert-warning">
-        Belum ada data mahasiswa. Silahkan isi form terlebih dahulu.
+    <!-- Stat Cards -->
+    <div class="stat-row" th:if="${!users.empty}">
+        <div class="stat-card">
+            <div class="stat-label">Total Mahasiswa</div>
+            <div class="stat-val purple" th:text="${users.size()}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Laki-laki</div>
+            <div class="stat-val" th:text="${users.stream().filter(u -> u.jenisKelamin == 'Laki-laki').count()}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Perempuan</div>
+            <div class="stat-val teal" th:text="${users.stream().filter(u -> u.jenisKelamin == 'Perempuan').count()}">0</div>
+        </div>
     </div>
 
-    <table class="table table-bordered table-striped" th:if="${!users.empty}">
-        <thead class="table-dark">
-        <tr>
-            <th>Nama</th>
-            <th>NIM</th>
-            <th>Jenis Kelamin</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="u : ${users}">
-            <td th:text="${u.nama}"></td>
-            <td th:text="${u.nim}"></td>
-            <td th:text="${u.jenisKelamin}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Empty State -->
+    <div th:if="${users.empty}" class="table-card">
+        <div class="empty-state">
+            Belum ada data mahasiswa. Silakan tambah data terlebih dahulu.
+        </div>
+    </div>
 
-    <footer class="mt-5 text-center text-muted">
-        <p>&copy; 2026 - Refky Muhammad Syahrin (20230140050)</p>
+    <!-- Table -->
+    <div class="table-card" th:if="${!users.empty}">
+        <div class="table-card-header">
+            <span class="table-card-title">Daftar Mahasiswa</span>
+            <span class="badge-count" th:text="${users.size() + ' data'}">0 data</span>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Jenis Kelamin</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td>
+                    <span class="avatar" th:classappend="${u.jenisKelamin == 'Perempuan'} ? 'p'" th:text="${#strings.substring(u.nama,0,2).toUpperCase()}"></span>
+                    <span th:text="${u.nama}"></span>
+                </td>
+                <td><span class="nim-pill" th:text="${u.nim}"></span></td>
+                <td>
+                    <span th:if="${u.jenisKelamin == 'Laki-laki'}" class="gender-l">Laki-laki</span>
+                    <span th:if="${u.jenisKelamin == 'Perempuan'}" class="gender-p">Perempuan</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="mt-5 text-center" style="font-size:12px;color:#bbb;">
+        &copy; 2026 &mdash; Refky Muhammad Syahrin (20230140050)
     </footer>
 </div>
 </body>
