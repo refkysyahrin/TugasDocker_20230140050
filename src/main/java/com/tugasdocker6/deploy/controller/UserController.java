@@ -1,6 +1,7 @@
 package com.tugasdocker6.deploy.controller;
 
 import com.tugasdocker6.deploy.model.User;
+import com.tugasdocker6.deploy.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +18,21 @@ public class UserController {
     private final String USERNAME = "admin";
     private final String PASSWORD = "20230140050";
 
-    // List untuk menampung data mahasiswa secara temporary
-    private static List<User> userList = new ArrayList<>();
+    private final UserService userService;
 
-    // Halaman login sebagai entry point utama [cite: 56, 71]
+    // Constructor Injection
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    // == LOGIN ==
+    // Halaman login sebagai entry point utama
     @GetMapping("/")
     public String loginPage() {
         return "login";
     }
 
-    // Proses autentikasi [cite: 70, 73]
+    // Proses autentikasi
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
@@ -39,24 +45,26 @@ public class UserController {
         }
     }
 
-    // Menampilkan halaman Home dan tabel data [cite: 55, 74, 78]
+    // == HOME ==
+    // Menampilkan halaman Home dan tabel data
     @GetMapping("/home")
     public String home(Model model) {
-        model.addAttribute("users", userList);
+        model.addAttribute("datalist", userService.getAllUsers());
         return "home";
     }
 
-    // Menampilkan form input mahasiswa [cite: 54, 85]
+    // == CREATE ==
+    // Menampilkan form input mahasiswa
     @GetMapping("/form")
     public String showForm(Model model) {
         model.addAttribute("user", new User());
         return "form";
     }
 
-    // Menyimpan data ke list temporary dan kembali ke home [cite: 92, 96]
+    // Menyimpan data ke list temporary dan kembali ke home
     @PostMapping("/save")
     public String saveUser(@ModelAttribute User user) {
-        userList.add(user);
+        userService.addUser(user);
         return "redirect:/home";
     }
 
