@@ -33,7 +33,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="mhs, iterStat : ${dataMahasiswa}" th:if="${not #lists.isEmpty(dataMahasiswa)}">
+    <tr th:each="mhs, iterStat : ${datalist}" th:if="${not #lists.isEmpty(datalist)}">
         <td th:text="${iterStat.count}">1</td>
         <td th:text="${mhs.nama}">Nama</td>
         <td th:text="${mhs.nim}">NIM</td>
@@ -42,7 +42,7 @@
     </tbody>
 </table>
 
-<div th:if="${#lists.isEmpty(dataMahasiswa)}" class="empty-data">
+<div th:if="${#lists.isEmpty(datalist)}" class="empty-data">
     Belum ada data
 </div>
 
